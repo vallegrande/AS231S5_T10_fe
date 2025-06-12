@@ -1,4 +1,6 @@
+<!-- Contenedor principal de la aplicación -->
 <div class="container">
+  <!-- Tarjeta para la sección de nueva consulta -->
   <mat-card class="query-card animate-in">
     <mat-card-header>
       <mat-icon class="header-icon">quick_references</mat-icon>
@@ -6,6 +8,7 @@
     </mat-card-header>
 
     <mat-card-content>
+      <!-- Campo de entrada para la nueva consulta -->
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Ingrese su consulta</mat-label>
         <textarea
@@ -17,35 +20,30 @@
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
+      <!-- Grupo de botones para acciones -->
       <div class="button-group">
+        <!-- Botón para ejecutar la consulta y guardarla -->
         <button
           mat-raised-button
           color="primary"
           class="action-button primary"
-          (click)="executeQueryAndClear()"
+          (click)="executeAndSaveQuery()"
           [disabled]="isLoading">
           <mat-icon>send</mat-icon>
           Ejecutar
         </button>
-
-        <button
-          mat-raised-button
-          color="accent"
-          class="action-button secondary"
-          (click)="executeQueryAndStoreAndClear()"
-          [disabled]="isLoading">
-          <mat-icon>save</mat-icon>
-          Ejecutar y Guardar
-        </button>
       </div>
 
+      <!-- Barra de progreso para indicar carga -->
       <mat-progress-bar *ngIf="isLoading" mode="indeterminate" class="loading-bar"></mat-progress-bar>
 
+      <!-- Caja para mostrar mensajes de error -->
       <div *ngIf="errorMessage" class="feedback-box error">
         <mat-icon>error</mat-icon>
         {{ errorMessage }}
       </div>
 
+      <!-- Caja para mostrar el resultado de la consulta exitosa -->
       <div *ngIf="queryResult" class="feedback-box success">
         <mat-icon>check_circle</mat-icon>
         <div class="query-result">{{ queryResult }}</div>
@@ -53,6 +51,7 @@
     </mat-card-content>
   </mat-card>
 
+  <!-- Tarjeta para el historial de consultas -->
   <mat-card class="records-card animate-in">
     <mat-card-header>
       <mat-icon class="header-icon">history</mat-icon>
@@ -60,7 +59,9 @@
     </mat-card-header>
 
     <mat-card-content>
+      <!-- Contenedor para filtros de tabla -->
       <div class="filters-container">
+        <!-- Campo de búsqueda para filtrar la tabla -->
         <mat-form-field class="search-field" appearance="outline">
           <mat-label>Filtrar consultas</mat-label>
           <input
@@ -71,6 +72,7 @@
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
 
+        <!-- Grupo de botones para filtrar por estado -->
         <mat-button-toggle-group
           [(ngModel)]="statusFilter"
           (change)="updateStatusFilter()"
@@ -81,34 +83,39 @@
         </mat-button-toggle-group>
       </div>
 
+      <!-- Contenedor de la tabla con elevación de Material Design -->
       <div class="table-container mat-elevation-z8">
         <table mat-table [dataSource]="dataSource" matSort class="history-table">
-          <ng-container matColumnDef="query">
+          <!-- Columna 'pregunta' (anteriormente 'query') -->
+          <ng-container matColumnDef="pregunta">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Consulta </th>
             <td mat-cell *matCellDef="let record">
-              {{ record.query }}
+              {{ record.pregunta }}
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="response">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Consulta Realizada </th>
+          <!-- Columna 'respuesta' (anteriormente 'response') -->
+          <ng-container matColumnDef="respuesta">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Respuesta de IA </th>
             <td mat-cell *matCellDef="let record">
               <div class="query-details">
-                <strong>Consulta:</strong> {{ record.query }}
                 <div class="response-section">
-                  <strong>Respuesta:</strong> {{ record.response }}
+                  {{ record.respuesta }}
                 </div>
               </div>
             </td>
           </ng-container>
 
+          <!-- Columna 'Acciones' -->
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef> Acciones </th>
             <td mat-cell *matCellDef="let record">
               <div class="action-buttons">
+                <!-- Botón de edición -->
                 <button mat-icon-button (click)="openEditDialog(record)" matTooltip="Editar">
                   <mat-icon>edit</mat-icon>
                 </button>
+                <!-- Botón para desactivar o restaurar, cambia el icono según el estado -->
                 <button mat-icon-button (click)="toggleStatus(record)"
                         [matTooltip]="record.status === 'A' ? 'Desactivar' : 'Restaurar'">
                   <mat-icon>{{ record.status === 'A' ? 'delete' : 'restore' }}</mat-icon>
@@ -117,8 +124,10 @@
             </td>
           </ng-container>
 
+          <!-- Definiciones de filas de encabezado y datos -->
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <!-- Fila cuando no hay datos que coincidan con el filtro -->
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell" colspan="3">
               No se encontraron registros que coincidan con el filtro "{{input.value}}"
@@ -126,6 +135,7 @@
           </tr>
         </table>
 
+        <!-- Paginador de Material Angular -->
         <mat-paginator
           [pageSizeOptions]="[5, 10, 25, 100]"
           aria-label="Seleccionar página de registros">
@@ -135,15 +145,17 @@
   </mat-card>
 </div>
 
-<!-- Edit Dialog Template -->
+<!-- Plantilla para el diálogo de edición (no se muestra directamente, sino a través de MatDialog) -->
 <ng-template #editDialogTemplate let-data>
   <h2 mat-dialog-title>Editar Consulta</h2>
   <mat-dialog-content>
+    <!-- Campo para mostrar la consulta original (deshabilitado) -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Consulta Original</mat-label>
       <input matInput [value]="data.originalQuery" disabled>
     </mat-form-field>
 
+    <!-- Campo para ingresar la nueva consulta -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Nueva Consulta</mat-label>
       <textarea
@@ -154,6 +166,7 @@
       </textarea>
     </mat-form-field>
   </mat-dialog-content>
+  <!-- Acciones del diálogo (Cancelar y Guardar) -->
   <mat-dialog-actions>
     <button mat-button (click)="cancelEdit()">Cancelar</button>
     <button mat-button color="primary" (click)="confirmEdit(data)">Guardar</button>

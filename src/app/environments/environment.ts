@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  URL_IA: 'https://miniature-rotary-phone-qgpr77rvxg9c96g5-8085.app.github.dev/api'
+  URL_IA: 'https://curly-barnacle-x6j4r64pv543vp4g-8086.app.github.dev/api/ai'
 };
