@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: frontend
+  labels:
+    environment: development
+    team: frontend-vg
+  annotations:
+    owner: frontend-vg

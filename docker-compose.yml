@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: frongemi  # Reemplaza esto por el nombre de tu imagen en Docker Hub
     container_name: angular-frontend
     ports:
       - "80:80"

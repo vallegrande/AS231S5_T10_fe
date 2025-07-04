@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-deployment
+  namespace: frontend
+spec:
+  replicas: 2  # Ajusta según sea necesario
+  selector:
+    matchLabels:
+      app: microservice
+  template:
+    metadata:
+      labels:
+        app: microservice
+    spec:
+      containers:
+      - name: microservice
+        image: chumpitazkasandra/frongemi:latest  # Usar la imagen que ya tienes
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
